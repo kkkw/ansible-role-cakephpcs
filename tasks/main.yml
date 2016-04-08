@@ -1,0 +1,17 @@
+---
+- name: CakePHPCS | cakephp-codesniffer install with composer
+  shell: >
+    composer global require "cakephp/cakephp-codesniffer=@stable"
+    creates=~/.composer/vendor/cakephp/cakephp-codesniffer
+
+- name: CakePHPCS | check cakephp-codesniffer installed_paths
+  shell: >
+    ~/.composer/vendor/bin/phpcs -i
+  register: phpcs_installed
+  ignore_errors: true
+  changed_when: false
+
+- name: CakePHPCS | set cakephp-codesniffer installed_paths
+  shell: >
+    ~/.composer/vendor/bin/phpcs --config-set installed_paths ~/.composer/vendor/cakephp/cakephp-codesniffer
+  when: phpcs_installed.stdout.find('CakePHP') == -1
